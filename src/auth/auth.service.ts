@@ -42,8 +42,9 @@ export class AuthService {
       throw new UnauthorizedException('Credentials are not valid (email)');
     if(!bcrypt.compareSync(password, user.password))
       throw new UnauthorizedException('Credentials are not valid (password)');
-  return user;
+    return user;
   }
+  
   findAll() {
     return `This action returns all auth`;
   }
