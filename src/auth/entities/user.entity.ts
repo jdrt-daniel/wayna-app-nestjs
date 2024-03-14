@@ -17,14 +17,14 @@ export class User extends Document {
   email: string;
 
   @ApiProperty({ example: '123456789', description: 'Password', required: true })
-  @Prop({ required: true })
+  @Prop({ required: true, select: false })
   password: string;
 
   @Prop({ required: true })
-  isActive:boolean;
+  isActive: boolean;
 
   @Prop({ type: [String], required: true, default: ['user'] })
-  roles:string[];
+  roles: string[];
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
