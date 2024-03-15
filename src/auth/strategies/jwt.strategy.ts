@@ -22,11 +22,9 @@ export class JwtStrategy extends PassportStrategy(Strategy){
     }
     
     async validate( payload:JwtPayload ): Promise<User>{
-
         const { id } = payload;
-
         const user = await this.UsersModel.findOne(
-            { id }, // Objeto de búsqueda directo
+            { _id: id } // Utilizamos _id como campo de búsqueda
         );
         if(!user)
             throw new UnauthorizedException('Token not valid')
