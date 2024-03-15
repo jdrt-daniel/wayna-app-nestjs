@@ -29,7 +29,7 @@ export class AuthService {
       });
       // Eliminar la propiedad password del objeto user
       delete user.password
-      const token = this.getJwtToken({ email: user.email });
+      const token = this.getJwtToken({ id: user._id });
       return {
         firstname: user.firstname,
         lastname: user.lastname,
@@ -49,18 +49,30 @@ export class AuthService {
     const { password, email } = loginUserDto;
     const user = await this.UsersModel.findOne(
       { email }, // Objeto de búsqueda directo
-      { email: 1, password: 1, _id: 0 } // Proyección para incluir solo email y password quitando el _id
+      { email: 1, password: 1, _id: 1 } // Proyección para incluir solo email y password quitando el _id
     );
     if(!user)
       throw new UnauthorizedException('Credentials are not valid (email)');
     if(!bcrypt.compareSync(password, user.password))
       throw new UnauthorizedException('Credentials are not valid (password)');
-     const token = this.getJwtToken({ email: user.email });
+     const token = this.getJwtToken({ id: user._id });
     return {
+      id:user._id,
       email: user.email,
       password: user.password,
       token
     };
+  }
+
+  async checkAuthStatus( user: User ){
+    return {
+      id:user._id,
+      email: user.email,
+      password: user.password,
+      token: this.getJwtToken({ id: user.id })
+    };
+   
+
   }
   
   private getJwtToken(payload: JwtPayload) {
