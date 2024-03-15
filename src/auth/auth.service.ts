@@ -4,12 +4,16 @@ import { InjectModel }                                 from '@nestjs/mongoose';
 import { Model }                                       from 'mongoose';
 import { User }                                        from './entities/user.entity';
 import * as bcrypt                                     from 'bcrypt';
+import { JwtPayload }                                  from './interfaces/jwt-payload.interface';
+import { JwtService }                                  from '@nestjs/jwt';
 @Injectable()
 export class AuthService {
   constructor(
 
     @InjectModel(User.name)
-    private readonly UsersModel:Model<User>
+    private readonly UsersModel:Model<User>,
+
+    private readonly jwtService: JwtService
     
   ) {}
 
@@ -25,7 +29,16 @@ export class AuthService {
       });
       // Eliminar la propiedad password del objeto user
       delete user.password
-      return user;
+      const token = this.getJwtToken({ email: user.email });
+      return {
+        firstname: user.firstname,
+        lastname: user.lastname,
+        email: user.email,
+        password: user.password,
+        isActive: user.isActive,
+        roles: user.roles,
+        token
+      };
     } catch (error) {
       this.handleExceptions( error );
     }
@@ -42,9 +55,19 @@ export class AuthService {
       throw new UnauthorizedException('Credentials are not valid (email)');
     if(!bcrypt.compareSync(password, user.password))
       throw new UnauthorizedException('Credentials are not valid (password)');
-    return user;
+     const token = this.getJwtToken({ email: user.email });
+    return {
+      email: user.email,
+      password: user.password,
+      token
+    };
   }
   
+  private getJwtToken(payload: JwtPayload) {
+    const token = this.jwtService.sign( payload );
+    return token;
+  }
+
   findAll() {
     return `This action returns all auth`;
   }

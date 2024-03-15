@@ -6,11 +6,13 @@ import { Module }               from '@nestjs/common';
 import { MongooseModule }       from '@nestjs/mongoose';
 import { PassportModule }       from '@nestjs/passport';
 import { User, UserSchema }     from './entities/user.entity'
+import { JwtStrategy }          from './strategies/jwt.strategy';
 
 @Module({
   controllers: [AuthController],
-  providers: [AuthService],
+  providers: [AuthService, JwtStrategy],
   imports:[
+    ConfigModule,
     MongooseModule.forFeature([
       {
         name: User.name,
@@ -32,13 +34,7 @@ import { User, UserSchema }     from './entities/user.entity'
         }
       }
     })
-    // JwtModule.register({
-    //   secret: process.env.JWT_SECRET,
-    //   signOptions:{
-    //     expiresIn: '2h'
-    //   }
-    // })
   ],
-  exports:[MongooseModule]
+  exports:[MongooseModule, JwtStrategy, PassportModule, JwtModule]
 })
 export class AuthModule {}

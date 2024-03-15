@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
-import { ApiProperty } from '@nestjs/swagger/dist';
+import { Document }                    from 'mongoose';
+import { ApiProperty }                 from '@nestjs/swagger/dist';
 
 @Schema()
 export class User extends Document {
@@ -25,6 +25,9 @@ export class User extends Document {
 
   @Prop({ type: [String], required: true, default: ['user'] })
   roles: string[];
+
+
 }
+
 
 export const UserSchema = SchemaFactory.createForClass(User);
