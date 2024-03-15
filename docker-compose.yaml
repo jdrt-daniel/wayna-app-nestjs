@@ -1,0 +1,13 @@
+version: '3'
+
+services:
+  db:
+    image: mongo:5
+    restart: always
+    container_name: mongodb_wayna
+    ports:
+      - "60015:27017"
+    environment:
+      MONGODB_DATABASE: WAYNADB
+    volumes:
+      - ./mongodb:/data/db/s
